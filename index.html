@@ -12,30 +12,26 @@
 </head>
 
 <body>
-    <h2>Code voorbeeld met webcam</h2>
+    <h2>Sneaker catch</h2>
     <video autoplay playsinline muted id="webcam" width="533" height="300"></video><br />
     <div id="label"></div>
     <br />
-    <button id="labelOne">Label one</button>
-    <button id="labelTwo">Label two</button>
-    <button id="labelThree">Label three</button>
-    <button id="train">TRAIN</button>
 
+    <div id="start">
+        <button onclick="start()" id="goBtn">Start</button>
+    </div>
+    <div id="takePhoto">
+        <p id="objective"></p>
+        <input type="file" accept="image/*;capture=camera" onchange="imageUploaded(event)" id="photoTaken">
+    </div>
     <div id="result">
         <p id="result-text"></p>
         <img width="300px" id="output">
         <img width="100%" height="100%" id="output-hidden">
     </div>
-
-    <input type="text" id="inputfield">
-    <button id="playbutton">Play</button>
-
     <div>
-        <label for="file">Upload Image</label>
-        <input type="file" accept="image/*;capture=camera" id="file">
-      </div>
-      
-      <div><img id="output" width="400"/></div>
+        <span id="points"></span>
+    </div>
 
 </body>
 

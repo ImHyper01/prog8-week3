@@ -1,66 +1,53 @@
-const video = document.getElementById("webcam");
-const label = document.getElementById("label");
-const image = document.getElementById('output')
+const featureExtractor = ml5.featureExtractor('MobileNet', { numLabels: 3 }, modelLoaded);
 
-const labelOneBtn = document.querySelector("#labelOne");
-const labelTwoBtn = document.querySelector("#labelTwo");
-const labelThreeBtn = document.querySelector("#labelThree");
-const trainbtn = document.querySelector("#train");
-let inputField = document.querySelector("#inputfield")
-let playButton = document.querySelector("#playbutton")
-const fileButton = document.querySelector("#file")
-
-
-labelOneBtn.addEventListener("click", () => console.log("button 1"));
-labelTwoBtn.addEventListener("click", () => console.log("button 2"));
-labelThreeBtn.addEventListener("click", () => console.log("button 3"));
-
-trainbtn.addEventListener("click", () => console.log("train"));
-
+const goBtn = document.getElementById("goBtn");
+const objective = document.getElementById("objective");
+const photoTaken = document.getElementById("photoTaken");
+const result = document.getElementById("result");
+const resultText = document.getElementById("result-text");
 
 let synth = window.speechSynthesis
 
 function speak(text) {
     if (synth.speaking) {
-        console.log('still speaking...')
-        return
+        console.log('still speaking...');
+        return;
     }
     if (text !== '') {
-        let utterThis = new SpeechSynthesisUtterance(text)
-        synth.speak(utterThis)
+        let utterThis = new SpeechSynthesisUtterance(text);
+        synth.speak(utterThis);
     }
 }
 
-playButton.addEventListener("click", () => {
-    let text = inputField.value
-    speak(text)
-})
-
-
-fileButton.addEventListener("change", (event)=>{
-    image.src = URL.createObjectURL(event.target.files[0])
-})
-
-image.addEventListener('load', () => userImageUploaded())
-
-function userImageUploaded(){
-    console.log("The image is now visible in the DOM")
+function modelLoaded() {
+    console.log('Model Loaded!'); 
+    classifier = featureExtractor.classification(photoTaken);
+    featureExtractor.load("./model/model.json");
 }
 
-
-classifier.classify(document.getElementById('image'), (err, results) => {
-    console.log(results);
-});
-
-if (navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => {
-            video.srcObject = stream;
-        })
-        .catch((err) => {
-            console.log("Something went wrong!");
-        });
+function start () {
+    goBtn.remove();
+    objective.innerText = "laat een air force 1 zien"
+    speak("laat een air force 1 zien")
 }
 
-label.innerText = "Ready when you are!";
+function imageUploaded(event) {
+    let uploadedImage = document.getElementById("output");
+	uploadedImage.src = URL.createObjectURL(event.target.files[0]);
+
+    let uploadedImageHidden = document.getElementById("output-hidden");
+	uploadedImageHidden.src = URL.createObjectURL(event.target.files[0]);
+    
+    classifier.classify(uploadedImageHidden, (err, result) => {
+        if (result) {
+            if (result[0]['label'] === "Air force 1") {
+                speak("Je hebt een air force 1 gevonden")
+                resultText.innerText = "Je hebt een air force 1 gevonden"
+
+            } else {
+                speak("You've taken a photo of a " + result[0]['label'] + ", try again!")
+                resultText.innerText = "You've taken a photo of a " + result[0]['label'] + ", try again!"
+            }
+        }
+    });
+}
