@@ -5,6 +5,17 @@ const objective = document.getElementById("objective");
 const photoTaken = document.getElementById("photoTaken");
 const result = document.getElementById("result");
 const resultText = document.getElementById("result-text");
+const pointRequire = document.getElementById("points");
+
+let points = 0
+
+if (localStorage.getItem('points') === null) {
+    localStorage.setItem('points', 0);
+} else {
+    points = localStorage.getItem('points');
+}
+
+pointRequire.innerText = "Points: " + points
 
 let synth = window.speechSynthesis
 
@@ -27,8 +38,8 @@ function modelLoaded() {
 
 function start () {
     goBtn.remove();
-    objective.innerText = "laat een air force 1 zien"
-    speak("laat een air force 1 zien")
+    objective.innerText = "laat een sneaker zien"
+    speak("laat een sneaker zien")
 }
 
 function imageUploaded(event) {
